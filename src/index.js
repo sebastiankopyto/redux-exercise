@@ -2,52 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+
+// import method which create global store
 import { createStore } from 'redux';
+// import all reducerts in application
+import allReducers from './reducers';
+// Provider implements redux to application
+import { Provider } from 'react-redux';
 
-
-// ACTION -> INCREMENT
-// akcję wywołujemy za pomocą dispatcha. Informuje ona reducer o tym, jaki typ akcji został wykonany
-
-const increment = () => {
-  return {
-    type: 'INCREMENT',
-  }
-}
-
-const decrement = () => {
-  return {
-    type: 'DECREMENT',
-  }
-}
-
-// REDUCER 
-// Reducer jest czymś w rodzaju listenera, który przyjmuje akcję wywolłaną przez dispatch i decyduje, co z nią zrobić, bazując na jej typie
-
-const counter = (state = 0, action) => {
-  switch(action.type) {
-    case 'INCREMENT': 
-      return state + 1;
-    case 'DECREMENT':
-      return state - 1;
-  }
-};
-
-
-// GLOBAL STATE
-// state globalny, który przyjmuje "listener" w postaci reducera, aby decydować o tym, co zrobić przy wywołaniu akcji
-let store = createStore(counter);
-
-
-// Display in console
-store.subscribe(() => console.log(store.getState()));
-
-// DISPATCH
-// Wywołuje akcję, np. click handler
-store.dispatch(decrement());
+// creates store based on reducers and implements in to Google Chrome Redux extension
+const store = createStore(
+  allReducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
